@@ -1,0 +1,13 @@
+description "\377B226,42,150";
+
+uses
+	PlotCtrl;
+
+file
+	Copying,
+	FastDQL.h,
+	DQN.h,
+	HeatmapTimeView.h,
+	TrainingGraph.h,
+	TrainingGraph.cpp;
+

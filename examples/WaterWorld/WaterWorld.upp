@@ -1,0 +1,23 @@
+description "Deep Q Learning demo with a more realistic and larger setup\377";
+
+uses
+	CtrlLib,
+	plugin/bz2,
+	Docking,
+	FastDQL;
+
+file
+	Copying,
+	main.cpp,
+	WaterWorld.h,
+	WaterWorld.cpp,
+	WaterWorldAgent.cpp,
+	World.cpp,
+	WaterWorld.iml,
+	WaterWorld.rc,
+	pretrained.brc;
+
+mainconfig
+	"" = "GUI MT",
+	"" = "GUI MT NOGTK";
+
