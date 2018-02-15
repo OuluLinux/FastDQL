@@ -141,6 +141,7 @@ public:
 	int action = -1, dqn_action = 0;
 	int max_tail = 100;
 	int item_cursor = 0;
+	int id = -1;
 	bool do_training = true;
 	
 };

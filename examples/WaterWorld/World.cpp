@@ -16,6 +16,7 @@ World::World() {
 	
 	// Add agent
 	agents.SetCount(AGENT_COUNT);
+	for(int i = 0; i < agents.GetCount(); i++) agents[i].id = i;
 	
 }
 

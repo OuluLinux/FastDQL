@@ -82,9 +82,8 @@ void WaterWorldAgent::Backward() {
 			}
 		}
 		
-		smooth_reward += reward;
 		
-		if (iter % 1000 == 0) {
+		if (id == 0 && iter % 1000 == 0) {
 			while (smooth_reward_history.GetCount() >= max_reward_history_size) {
 				smooth_reward_history.Remove(0);
 			}
@@ -97,6 +96,8 @@ void WaterWorldAgent::Backward() {
 		}
 		iter++;
 	}
+	
+	smooth_reward += reward;
 }
 
 void WaterWorldAgent::Reset() {
