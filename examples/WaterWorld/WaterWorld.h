@@ -122,6 +122,7 @@ public:
 	
 	Vector<WaterWorldTrainer::DQItem> train_items;
 	WaterWorldTrainer dqn_trainer;
+	WaterWorldTrainer::MatType input_array;
 	Vector<Eye> eyes;
 	Vector<double> smooth_reward_history;
 	Vector<int> actions;
@@ -137,7 +138,7 @@ public:
 	int max_items = 10000;
 	int max_reward_history_size = 1000;
 	int iter = 0;
-	int action = -1;
+	int action = -1, dqn_action = 0;
 	int max_tail = 100;
 	int item_cursor = 0;
 	bool do_training = true;

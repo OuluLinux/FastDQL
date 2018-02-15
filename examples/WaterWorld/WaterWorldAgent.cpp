@@ -27,9 +27,9 @@ WaterWorldAgent::WaterWorldAgent() {
 void WaterWorldAgent::Forward() {
 	// in forward pass the agent simply behaves in the environment
 	// create input to brain
-	WaterWorldTrainer::MatType input_array;
 	LoadState(input_array);
-    action = actions[dqn_trainer.Act(input_array)];
+	dqn_action = dqn_trainer.Act(input_array);
+    action = actions[dqn_action];
 }
 
 void WaterWorldAgent::LoadState(WaterWorldTrainer::MatType& mat) {
@@ -68,6 +68,8 @@ void WaterWorldAgent::Backward() {
 			if (item_cursor >= max_items) item_cursor = 0;
 			
 			// Load current state
+			item.before_state = input_array;
+			item.before_action = dqn_action;
 			item.after_reward = reward;
 			LoadState(item.after_state);
 			
@@ -79,22 +81,22 @@ void WaterWorldAgent::Backward() {
 				dqn_trainer.Learn(train_items[Random(train_items.GetCount())]);
 			}
 		}
-	}
-	
-	smooth_reward += reward;
-	
-	if (iter % 50 == 0) {
-		while (smooth_reward_history.GetCount() >= max_reward_history_size) {
-			smooth_reward_history.Remove(0);
+		
+		smooth_reward += reward;
+		
+		if (iter % 1000 == 0) {
+			while (smooth_reward_history.GetCount() >= max_reward_history_size) {
+				smooth_reward_history.Remove(0);
+			}
+			smooth_reward_history.Add(smooth_reward);
+			
+			world->reward.SetLimit(max_reward_history_size);
+			world->reward.AddValue(smooth_reward);
+			
+			iter = 0;
 		}
-		smooth_reward_history.Add(smooth_reward);
-		
-		world->reward.SetLimit(max_reward_history_size);
-		world->reward.AddValue(smooth_reward);
-		
-		iter = 0;
+		iter++;
 	}
-	iter++;
 }
 
 void WaterWorldAgent::Reset() {
