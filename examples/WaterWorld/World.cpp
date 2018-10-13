@@ -15,8 +15,7 @@ World::World() {
 	}
 	
 	// Add agent
-	agents.SetCount(AGENT_COUNT);
-	for(int i = 0; i < agents.GetCount(); i++) agents[i].id = i;
+	WaterWorldAgent& agent = agents.Add();
 	
 }
 
@@ -224,8 +223,7 @@ void World::Paint(Draw& d) {
 		
 		// color agent based on reward it is experiencing at the moment
 		int r = min(255, max(0, (int)(a.reward * 200.0)));
-		int hue = 100 * i / agents.GetCount();
-		Color fill_clr(r, 150 + hue, 150 - hue);
+		Color fill_clr(r, 150, 150);
 		
 		// draw tail (not in original);
 		Pointf* prev = &a.op;

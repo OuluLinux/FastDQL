@@ -13,15 +13,6 @@ using namespace FastDQL;
 
 class WaterWorld;
 
-
-const int AGENT_COUNT = 5;
-enum {ACT_LEFT, ACT_RIGHT, ACT_UP, ACT_DOWN, ACT_COUNT};
-const int EYES_COUNT = 30;
-const int INPUT_SIZE = EYES_COUNT * 5 + 2;
-
-typedef DQNTrainer<ACT_COUNT, INPUT_SIZE> WaterWorldTrainer;
-
-
 // Wall is made up of two points
 struct Wall : Moveable<Wall> {
 	Wall() {}
@@ -105,7 +96,7 @@ struct Eye : Moveable<Eye> {
 };
 
 
-class WaterWorldAgent {
+class WaterWorldAgent : public DQNAgent {
 	
 protected:
 	friend class WaterWorldCtrl;
@@ -115,14 +106,9 @@ public:
 	void Forward();
 	void Backward();
 	void Reset();
-	void LoadState(WaterWorldTrainer::MatType& mat);
-	int GetExperienceWritePointer() {return item_cursor;}
 	
-	WaterWorld* world = NULL;
+	WaterWorld* world;
 	
-	Vector<WaterWorldTrainer::DQItem> train_items;
-	WaterWorldTrainer dqn_trainer;
-	WaterWorldTrainer::MatType input_array;
 	Vector<Eye> eyes;
 	Vector<double> smooth_reward_history;
 	Vector<int> actions;
@@ -130,19 +116,13 @@ public:
 	Pointf p;		// positional information
 	Pointf v;		// velocity
 	Pointf op;		// old position
-	double smooth_reward = 0.0;
-	double reward = 0.0;
-	double rad = 0.0;
-	double digestion_signal = 0.0l;
-	int add_item_step = 5;
-	int max_items = 10000;
-	int max_reward_history_size = 1000;
-	int iter = 0;
-	int action = -1, dqn_action = 0;
-	int max_tail = 100;
-	int item_cursor = 0;
-	int id = -1;
-	bool do_training = true;
+	double smooth_reward;
+	double reward;
+	double rad, digestion_signal;
+	int nflot, iter;
+	int action;
+	int max_tail;
+	bool do_training;
 	
 };
 
@@ -171,8 +151,7 @@ class WaterWorld : public DockWindow {
 protected:
 	friend class WaterWorldAgent;
 	
-	HeatmapTimeView<WaterWorldTrainer> network_view;
-	TrainingGraph<WaterWorldTrainer> reward;
+	HeatmapTimeView network_view;
 	World world;
 	Label lbl_eps;
 	SliderCtrl eps;
@@ -180,11 +159,14 @@ protected:
 	Button goveryfast, gofast, gonorm, goslow, reset;
 	ParentCtrl statusctrl;
 	Label status;
-	Button load_pretrained, load_btn, save_btn, reload_btn;
+	Button save, load, load_pretrained;
+	TrainingGraph reward;
+	Button reload_btn;
 	ParentCtrl agent_ctrl;
+	DocEdit agent_edit;
 	String t;
-	int simspeed = 2;
-	bool running = false, stopped = true;
+	int simspeed;
+	bool ticking_running, ticking_stopped;
 	
 	SpinLock ticking_lock;
 	
@@ -195,13 +177,13 @@ public:
 	
 	virtual void DockInit();
 	
-	void Reset();
-	void Load();
-	void Save();
 	void Start();
+	void Reset(bool init_reward, bool start);
 	void Reload();
 	void Refresher();
 	void RefreshEpsilon();
+	void Save();
+	void Load();
 	void LoadPretrained();
 	void RefreshStatus();
 	void PostRefreshStatus() {PostCallback(THISBACK(RefreshStatus));}

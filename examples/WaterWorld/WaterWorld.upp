@@ -15,6 +15,7 @@ file
 	World.cpp,
 	WaterWorld.iml,
 	WaterWorld.rc,
+	pretrained.bin,
 	pretrained.brc;
 
 mainconfig
