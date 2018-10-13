@@ -1,13 +1,21 @@
 description "\377B226,42,150";
 
 uses
-	PlotCtrl;
+	PlotCtrl,
+	CtrlCore,
+	CtrlLib;
 
 file
 	Copying,
 	FastDQL.h,
-	DQN.h,
+	Agent.h,
+	Agent.cpp,
+	Mat.h,
+	Mat.cpp,
+	Recurrent.h,
+	Recurrent.cpp,
 	HeatmapTimeView.h,
+	HeatmapTimeView.cpp,
 	TrainingGraph.h,
 	TrainingGraph.cpp;
 
